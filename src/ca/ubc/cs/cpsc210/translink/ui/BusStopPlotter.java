@@ -8,8 +8,11 @@ import android.location.Location;
 import ca.ubc.cs.cpsc210.translink.BusesAreUs;
 import ca.ubc.cs.cpsc210.translink.R;
 import ca.ubc.cs.cpsc210.translink.model.Stop;
+import ca.ubc.cs.cpsc210.translink.util.Geometry;
+import ca.ubc.cs.cpsc210.translink.util.LatLon;
 import org.osmdroid.bonuspack.clustering.RadiusMarkerClusterer;
 import org.osmdroid.bonuspack.overlays.Marker;
+import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
 import java.util.HashMap;
@@ -31,6 +34,8 @@ public class BusStopPlotter extends MapViewOverlay {
     private Marker nearestStnMarker;
     private Activity activity;
     private StopInfoWindow stopInfoWindow;
+
+
 
     /**
      * Constructor
@@ -55,7 +60,20 @@ public class BusStopPlotter extends MapViewOverlay {
      */
     public void markStops(Location currentLocation) {
         Drawable stopIconDrawable = activity.getResources().getDrawable(R.drawable.stop_icon);
-
+        updateVisibleArea();
+        Geometry geometry = new Geometry();
+        for (Stop stop : stopMarkerMap.keySet()) {
+            LatLon currentLatLon = stop.getLocn();
+            if (geometry.rectangleContainsPoint(northWest, southEast, currentLatLon)) {
+                Marker marker = getMarker(stop);
+                marker.setIcon(stopIconDrawable);
+                marker.setInfoWindow(stopInfoWindow);
+                marker.setTitle(stop.getName() + " " + stop.getNumber());
+                GeoPoint gp = geometry.gpFromLatLon(currentLatLon);
+                marker.setPosition(gp);
+                stopClusterer.add(marker);
+            }
+        }
         // TODO: complete the implementation of this method (Task 5)
     }
 
