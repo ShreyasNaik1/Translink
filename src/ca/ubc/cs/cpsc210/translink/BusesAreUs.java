@@ -150,7 +150,7 @@ public class BusesAreUs extends Activity implements LocationListener, StopSelect
      */
     @Override
     public void onStopSelected(Stop stop) {
-        StopManager stopManager = new StopManager.getInstance();
+        StopManager stopManager = StopManager.getInstance();
         try {
             stopManager.setSelected(stop);
         } catch (StopException e) {
