@@ -62,7 +62,6 @@ public class BusStopPlotter extends MapViewOverlay {
      */
     public void markStops(Location currentLocation) {
         Drawable stopIconDrawable = activity.getResources().getDrawable(R.drawable.stop_icon);
-        Geometry geometry = new Geometry();
         updateVisibleArea();
         newStopClusterer();
         clearMarkers();
@@ -70,11 +69,11 @@ public class BusStopPlotter extends MapViewOverlay {
             LatLon stopLocn = stop.getLocn();
             Marker currentMarker = new Marker(mapView);
             setMarker(stop, currentMarker);
-            if (geometry.rectangleContainsPoint(northWest, southEast, stopLocn)) {
+            if (Geometry.rectangleContainsPoint(northWest, southEast, stopLocn)) {
                 currentMarker.setIcon(stopIconDrawable);
                 currentMarker.setInfoWindow(stopInfoWindow);
                 currentMarker.setTitle(stop.getName() + " " + stop.getNumber());
-                GeoPoint gp = geometry.gpFromLatLon(stopLocn);
+                GeoPoint gp = Geometry.gpFromLatLon(stopLocn);
                 currentMarker.setPosition(gp);
                 stopClusterer.add(currentMarker);
             }
@@ -108,10 +107,12 @@ public class BusStopPlotter extends MapViewOverlay {
     public void updateMarkerOfNearest(Stop nearest) {
         Drawable stopIconDrawable = activity.getResources().getDrawable(R.drawable.stop_icon);
         Drawable closestStopIconDrawable = activity.getResources().getDrawable(R.drawable.closest_stop_icon);
-        Marker marker = new Marker(mapView);
-        marker.setIcon(stopIconDrawable);
-        marker.setImage(closestStopIconDrawable);
-        setMarker(nearest, marker);
+        if (nearest != null) {
+            nearestStnMarker = getMarker(nearest);
+            nearestStnMarker.setIcon(closestStopIconDrawable);
+        } else {
+            nearestStnMarker.setIcon(stopIconDrawable);
+        }
     }
 
     /**

@@ -111,7 +111,11 @@ public class BusesAreUs extends Activity implements LocationListener, StopSelect
     @Override
     public void onLocationChanged(Stop nearest, LatLon locn) {
         myNearestStop = nearest;
-        nearestStopLabel.setText(myNearestStop.getName());
+        if (myNearestStop != null) {
+            nearestStopLabel.setText(myNearestStop.getName());
+        } else {
+            nearestStopLabel.setText(R.string.out_of_range);
+        }
     }
 
     @Override
