@@ -9,6 +9,7 @@ import ca.ubc.cs.cpsc210.translink.BusesAreUs;
 import ca.ubc.cs.cpsc210.translink.R;
 import ca.ubc.cs.cpsc210.translink.model.Stop;
 import ca.ubc.cs.cpsc210.translink.model.StopManager;
+import ca.ubc.cs.cpsc210.translink.model.exception.StopException;
 import ca.ubc.cs.cpsc210.translink.util.Geometry;
 import ca.ubc.cs.cpsc210.translink.util.LatLon;
 import org.osmdroid.bonuspack.clustering.RadiusMarkerClusterer;
@@ -104,14 +105,16 @@ public class BusStopPlotter extends MapViewOverlay {
      *
      * @param nearest stop nearest to user's location (null if no stop within StopManager.RADIUS metres)
      */
-    public void updateMarkerOfNearest(Stop nearest) {
+    public void updateMarkerOfNearest(Stop nearest) throws StopException {
         Drawable stopIconDrawable = activity.getResources().getDrawable(R.drawable.stop_icon);
         Drawable closestStopIconDrawable = activity.getResources().getDrawable(R.drawable.closest_stop_icon);
         if (nearest != null) {
             nearestStnMarker = getMarker(nearest);
             nearestStnMarker.setIcon(closestStopIconDrawable);
+            StopManager.getInstance().setSelected(nearest);
         } else {
             nearestStnMarker.setIcon(stopIconDrawable);
+            StopManager.getInstance().setSelected(null);
         }
     }
 
