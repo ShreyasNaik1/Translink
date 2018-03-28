@@ -68,14 +68,15 @@ public class BusStopPlotter extends MapViewOverlay {
         clearMarkers();
         for (Stop stop : StopManager.getInstance()) {
             LatLon stopLocn = stop.getLocn();
-            Marker currentMarker = new Marker(mapView);
-            setMarker(stop, currentMarker);
             if (Geometry.rectangleContainsPoint(northWest, southEast, stopLocn)) {
+                Marker currentMarker = new Marker(mapView);
                 currentMarker.setIcon(stopIconDrawable);
                 currentMarker.setInfoWindow(stopInfoWindow);
                 currentMarker.setTitle(stop.getName() + " " + stop.getNumber());
                 GeoPoint gp = Geometry.gpFromLatLon(stopLocn);
                 currentMarker.setPosition(gp);
+                currentMarker.setRelatedObject(stop);
+                setMarker(stop, currentMarker);
                 stopClusterer.add(currentMarker);
             }
         }
@@ -108,14 +109,29 @@ public class BusStopPlotter extends MapViewOverlay {
     public void updateMarkerOfNearest(Stop nearest) throws StopException {
         Drawable stopIconDrawable = activity.getResources().getDrawable(R.drawable.stop_icon);
         Drawable closestStopIconDrawable = activity.getResources().getDrawable(R.drawable.closest_stop_icon);
-        if (nearest != null) {
-            nearestStnMarker = getMarker(nearest);
-            nearestStnMarker.setIcon(closestStopIconDrawable);
-            StopManager.getInstance().setSelected(nearest);
-        } else {
-            nearestStnMarker.setIcon(stopIconDrawable);
-            StopManager.getInstance().setSelected(null);
+        if ((nearest != null) && (nearestStnMarker != null)) {
+            if (getMarker(nearest) != null) {
+                if (!(getMarker(nearest).equals(nearestStnMarker))) {
+                    nearestStnMarker.setIcon(stopIconDrawable);
+                    getMarker(nearest).setIcon(closestStopIconDrawable);
+                    nearestStnMarker = getMarker(nearest);
+                }
+            }
         }
+        if (nearest != null) {
+            if (nearestStnMarker == null) {
+                Marker x = getMarker(nearest);
+                nearestStnMarker = x;
+                if (x != null) {
+                    nearestStnMarker.setRelatedObject(nearest);
+                }
+            }
+        }
+
+        if ((nearest == null) && (nearestStnMarker != null)) {
+            nearestStnMarker.setIcon(stopIconDrawable);
+        }
+
     }
 
     /**
