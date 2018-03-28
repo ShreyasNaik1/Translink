@@ -31,7 +31,8 @@ public class HttpBusLocationDataProvider extends AbstractHttpDataProvider {
      */
     protected URL getUrl() throws MalformedURLException {
         String url = "";
-        url = "http://api.translink.ca/rttiapi/v1/stops/60980/estimates?apikey="
+        int stopNo = stop.getNumber();
+        url = "http://api.translink.ca/rttiapi/v1/buses?apikey="
                 + TRANSLINK_API_KEY;
         System.out.println(url);
         return new URL(url);
