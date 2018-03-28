@@ -160,13 +160,7 @@ public class BusesAreUs extends Activity implements LocationListener, StopSelect
             stopManager.setSelected(stop);
         } catch (StopException e) {
             System.out.println("No such bus stop");
-        } catch (NullPointerException e) {
-            int number = stop.getNumber();
-            String name = stop.getName();
-            LatLon locn = stop.getLocn();
-            stopManager.getStopWithNumber(number, name, locn);
         }
-        // TODO: Complete the implementation of this method (Task 7)
     }
 
     /**

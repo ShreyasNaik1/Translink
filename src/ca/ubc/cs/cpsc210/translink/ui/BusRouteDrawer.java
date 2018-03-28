@@ -2,9 +2,16 @@ package ca.ubc.cs.cpsc210.translink.ui;
 
 import android.content.Context;
 import ca.ubc.cs.cpsc210.translink.BusesAreUs;
+import ca.ubc.cs.cpsc210.translink.model.Route;
+import ca.ubc.cs.cpsc210.translink.model.RoutePattern;
+import ca.ubc.cs.cpsc210.translink.model.Stop;
+import ca.ubc.cs.cpsc210.translink.model.StopManager;
+import ca.ubc.cs.cpsc210.translink.util.Geometry;
+import ca.ubc.cs.cpsc210.translink.util.LatLon;
 import org.osmdroid.DefaultResourceProxyImpl;
 import org.osmdroid.ResourceProxy;
 import org.osmdroid.bonuspack.overlays.Polyline;
+import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
 import java.util.ArrayList;
@@ -38,8 +45,33 @@ public class BusRouteDrawer extends MapViewOverlay {
      * Plot each visible segment of each route pattern of each route going through the selected stop.
      */
     public void plotRoutes(int zoomLevel) {
-
-        //TODO: complete the implementation of this method (Task 7)
+        Stop selected = StopManager.getInstance().getSelected();
+        updateVisibleArea();
+        busRouteOverlays.clear();
+        busRouteLegendOverlay.clear();
+        if (selected != null) {
+            for (Route route : selected.getRoutes()) {
+                int colour = busRouteLegendOverlay.add(route.getNumber());
+                for (RoutePattern routePattern : route.getPatterns()) {
+                    Polyline polyline = new Polyline(context);
+                    List<GeoPoint> geoPoints = new ArrayList<>();
+                    for (int i = 0; i < routePattern.getPath().size() - 1; i++) {
+                        LatLon first = routePattern.getPath().get(i);
+                        LatLon second = routePattern.getPath().get(i + 1);
+                        if (Geometry.rectangleIntersectsLine(northWest, southEast, first, second)) {
+                            GeoPoint oneGeo = Geometry.gpFromLatLon(first);
+                            GeoPoint twoGeo = Geometry.gpFromLatLon(second);
+                            geoPoints.add(oneGeo);
+                            geoPoints.add(twoGeo);
+                            polyline.setPoints(geoPoints);
+                            polyline.setColor(colour);
+                            polyline.setWidth(getLineWidth(zoomLevel));
+                            busRouteOverlays.add(polyline);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public List<Polyline> getBusRouteOverlays() {

@@ -1,10 +1,15 @@
 package ca.ubc.cs.cpsc210.translink.providers;
 
+import ca.ubc.cs.cpsc210.translink.model.Route;
 import ca.ubc.cs.cpsc210.translink.model.Stop;
+import ca.ubc.cs.cpsc210.translink.util.LatLon;
+import org.osmdroid.views.overlay.ItemizedIconOverlay;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import static ca.ubc.cs.cpsc210.translink.auth.TranslinkToken.TRANSLINK_API_KEY;
 
 /**
  * Wrapper for Translink Bus Location Data Provider
@@ -25,8 +30,11 @@ public class HttpBusLocationDataProvider extends AbstractHttpDataProvider {
      * @returns URL to query Translink web service for arrival data
      */
     protected URL getUrl() throws MalformedURLException {
-        // TODO: Complete the implementation of this method (Task 10)
-        return null;
+        String url = "";
+        url = "http://api.translink.ca/rttiapi/v1/stops/60980/estimates?apikey="
+                + TRANSLINK_API_KEY;
+        System.out.println(url);
+        return new URL(url);
     }
 
     @Override
