@@ -28,15 +28,7 @@ public class HttpArrivalDataProvider extends AbstractHttpDataProvider {
      * @returns URL to query Translink web service for arrival data
      */
     protected URL getUrl() throws MalformedURLException {
-        Integer stopNo = stop.getNumber();
-        String listNo = "";
-        String url = "";
-
-        for (Route route : stop.getRoutes()) {
-            listNo = listNo + route.getNumber() + ";";
-            url = "http://api.translink.ca/rttiapi/v1/stops/60980/estimates?apikey="
-                    + TRANSLINK_API_KEY;
-        }
+        String url = "http://api.translink.ca/rttiapi/v1/stops/60980/estimates?apikey=" + TRANSLINK_API_KEY;
         System.out.println(url);
         return new URL(url);
 

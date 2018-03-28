@@ -123,24 +123,23 @@ public class BusStopPlotter extends MapViewOverlay {
     public void updateMarkerOfNearest(Stop nearest) {
         Drawable stopIconDrawable = activity.getResources().getDrawable(R.drawable.stop_icon);
         Drawable closestStopIconDrawable = activity.getResources().getDrawable(R.drawable.closest_stop_icon);
-        if ((nearest != null) && (nearestStnMarker != null)) {
-            if (getMarker(nearest) != null) {
-                if (!(getMarker(nearest).equals(nearestStnMarker))) {
-                    nearestStnMarker.setIcon(stopIconDrawable);
-                    getMarker(nearest).setIcon(closestStopIconDrawable);
-                    nearestStnMarker = getMarker(nearest);
-                    nearestStnMarker.setRelatedObject(nearest);
-                }
-            }
-        }
+
         if (nearest != null) {
-            nearestStnMarker = getMarker(nearest);
-            if (nearestStnMarker != null) {
-                nearestStnMarker.setRelatedObject(nearest);
-                getMarker(nearest).setIcon(closestStopIconDrawable);
+            Marker nearestMarker = getMarker(nearest);
+            if (nearestMarker != null) {
+                if (nearestStnMarker!= null) {
+                    nearestStnMarker.setIcon(stopIconDrawable);
+                }
+                nearestMarker.setIcon(closestStopIconDrawable);
+                nearestStnMarker = nearestMarker;
+            } else {
+
             }
         }
         if ((nearest == null) && (nearestStnMarker != null)) {
+                nearestStnMarker.setIcon(stopIconDrawable);
+        }
+        if ((getMarker(nearest) == null) && (nearestStnMarker != null)) {
             nearestStnMarker.setIcon(stopIconDrawable);
         }
     }

@@ -33,7 +33,9 @@ public class HttpBusLocationDataProvider extends AbstractHttpDataProvider {
         String url = "";
         int stopNo = stop.getNumber();
         url = "http://api.translink.ca/rttiapi/v1/buses?apikey="
-                + TRANSLINK_API_KEY;
+                + TRANSLINK_API_KEY
+                + "&stopNo="
+                + stopNo;
         System.out.println(url);
         return new URL(url);
     }
