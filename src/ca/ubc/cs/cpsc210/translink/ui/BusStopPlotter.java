@@ -84,6 +84,9 @@ public class BusStopPlotter extends MapViewOverlay {
         }
     }
 
+    /*
+    * Helper method to create a new marker
+    */
     private Marker makeNewMarker(Drawable stopIcon, Stop stop) {
         Marker newMarker = new Marker(mapView);
         newMarker.setIcon(stopIcon);

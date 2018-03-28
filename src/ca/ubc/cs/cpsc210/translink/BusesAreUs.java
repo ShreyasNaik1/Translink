@@ -158,6 +158,7 @@ public class BusesAreUs extends Activity implements LocationListener, StopSelect
         StopManager stopManager = StopManager.getInstance();
         try {
             stopManager.setSelected(stop);
+            new DownloadBusLocationDataTask().execute(stop);
         } catch (StopException e) {
             System.out.println("No such bus stop");
         }
@@ -193,7 +194,6 @@ public class BusesAreUs extends Activity implements LocationListener, StopSelect
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
             new DownloadArrivalDataTask().execute(stop);
-            new DownloadBusLocationDataTask().execute(stop);
         } else {
             Toast.makeText(this, "Unable to establish network connection!", Toast.LENGTH_LONG).show();
         }
