@@ -63,15 +63,14 @@ public class BusRouteDrawer extends MapViewOverlay {
 
     public void plotRoutesSinglePattern(RoutePattern routePattern, List<GeoPoint> geoPoints, Polyline polyline,
                                         int colour, int zoomLevel) {
-
         for (int i = 0; i < routePattern.getPath().size() - 1; i++) {
             LatLon first = routePattern.getPath().get(i);
             LatLon second = routePattern.getPath().get(i + 1);
+            GeoPoint oneGeo = Geometry.gpFromLatLon(first);
+            GeoPoint twoGeo = Geometry.gpFromLatLon(second);
+            geoPoints.add(oneGeo);
+            geoPoints.add(twoGeo);
             if (Geometry.rectangleIntersectsLine(northWest, southEast, first, second)) {
-                GeoPoint oneGeo = Geometry.gpFromLatLon(first);
-                GeoPoint twoGeo = Geometry.gpFromLatLon(second);
-                geoPoints.add(oneGeo);
-                geoPoints.add(twoGeo);
                 polyline.setPoints(geoPoints);
                 polyline.setColor(colour);
                 polyline.setWidth(getLineWidth(zoomLevel));
@@ -79,7 +78,7 @@ public class BusRouteDrawer extends MapViewOverlay {
             }
         }
     }
-    //
+
     public List<Polyline> getBusRouteOverlays() {
         return Collections.unmodifiableList(busRouteOverlays);
     }
