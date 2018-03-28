@@ -79,14 +79,12 @@ public class BusStopPlotter extends MapViewOverlay {
             }
             stopClusterer.clusterer(mapView);
         }
-        if (nearestStnMarker != null) {
-            updateMarkerOfNearest((Stop) nearestStnMarker.getRelatedObject());
-        }
     }
 
     /*
     * Helper method to create a new marker
     */
+
     private Marker makeNewMarker(Drawable stopIcon, Stop stop) {
         Marker newMarker = new Marker(mapView);
         newMarker.setIcon(stopIcon);
@@ -106,6 +104,7 @@ public class BusStopPlotter extends MapViewOverlay {
     /**
      * Create a new stop cluster object used to group stops that are close by to reduce screen clutter
      */
+
     private void newStopClusterer() {
         stopClusterer = new RadiusMarkerClusterer(activity);
         stopClusterer.getTextPaint().setTextSize(20.0F * BusesAreUs.dpiFactor());
@@ -130,13 +129,11 @@ public class BusStopPlotter extends MapViewOverlay {
     public void updateMarkerOfNearest(Stop nearest) {
         Drawable stopIconDrawable = activity.getResources().getDrawable(R.drawable.stop_icon);
         Drawable closestStopIconDrawable = activity.getResources().getDrawable(R.drawable.closest_stop_icon);
-        if (getMarker(nearest) != nearestStnMarker && nearestStnMarker != null) {
-            nearestStnMarker.setIcon(stopIconDrawable);
-        }
+        checkInitialState(stopIconDrawable, nearest);
         if (nearest != null) {
             Marker nearestMarker = getMarker(nearest);
             if (nearestMarker != null) {
-                if (nearestStnMarker!= null) {
+                if (nearestStnMarker != null) {
                     nearestStnMarker.setIcon(stopIconDrawable);
                 }
                 nearestMarker.setIcon(closestStopIconDrawable);
@@ -145,10 +142,20 @@ public class BusStopPlotter extends MapViewOverlay {
                 makeNewMarker(closestStopIconDrawable, nearest);
             }
         }
+    }
+
+    /*
+    * Helper method to check initial state
+    */
+    private void checkInitialState(Drawable stopIconDrawable, Stop nearest) {
+        if (getMarker(nearest) != nearestStnMarker && nearestStnMarker != null) {
+            nearestStnMarker.setIcon(stopIconDrawable);
+        }
         if ((nearest == null) && (nearestStnMarker != null)) {
-                nearestStnMarker.setIcon(stopIconDrawable);
+            nearestStnMarker.setIcon(stopIconDrawable);
         }
     }
+
 
     /**
      * Manage mapping from stops to markers using a map from stops to markers.
