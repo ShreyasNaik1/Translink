@@ -71,34 +71,47 @@ public class BusStopPlotter extends MapViewOverlay {
             LatLon stopLocn = stop.getLocn();
             if (Geometry.rectangleContainsPoint(northWest, southEast, stopLocn)) {
                 if (!stopMarkerMap.containsKey(stop)) {
-                    Marker currentMarker = new Marker(mapView);
-                    currentMarker.setIcon(stopIconDrawable);
-                    currentMarker.setInfoWindow(stopInfoWindow);
-                    String stopTitle = stop.getName() + " " + stop.getNumber();
-                    Set<Route> routes = stop.getRoutes();
-                    for (Route route : routes) {
-                        stopTitle = stopTitle + "\n" + route.getName() + "" + route.getNumber();
-                    }
-                    currentMarker.setTitle(stopTitle);
-                    GeoPoint gp = Geometry.gpFromLatLon(stopLocn);
-                    currentMarker.setPosition(gp);
-                    currentMarker.setRelatedObject(stop);
-                    setMarker(stop, currentMarker);
-                    stopClusterer.add(currentMarker);
+                    makeMarker(stop, stopIconDrawable, stopLocn);
                 } else {
                     stopClusterer.add(getMarker(stop));
                 }
             }
             stopClusterer.clusterer(mapView);
         }
+        fillNearest(currentLocation);
+    }
+
+    private void fillNearest(Location currentLocation) {
         if (nearestStnMarker != null) {
             updateMarkerOfNearest((Stop) nearestStnMarker.getRelatedObject());
+        } else {
+            LatLon curLatLon = new LatLon(currentLocation.getLatitude(), currentLocation.getLongitude());
+            Stop nearestStop = StopManager.getInstance().findNearestTo(curLatLon);
+            nearestStnMarker = stopMarkerMap.get(nearestStop);
+            updateMarkerOfNearest(nearestStop);
         }
     }
 
+    private void makeMarker(Stop stop, Drawable stopIconDrawable, LatLon stopLocn) {
+        Marker currentMarker = new Marker(mapView);
+        currentMarker.setIcon(stopIconDrawable);
+        currentMarker.setInfoWindow(stopInfoWindow);
+        String stopTitle = stop.getName() + " " + stop.getNumber();
+        Set<Route> routes = stop.getRoutes();
+        for (Route route : routes) {
+            stopTitle = stopTitle + "\n" + route.getName() + "" + route.getNumber();
+        }
+        currentMarker.setTitle(stopTitle);
+        GeoPoint gp = Geometry.gpFromLatLon(stopLocn);
+        currentMarker.setPosition(gp);
+        currentMarker.setRelatedObject(stop);
+        setMarker(stop, currentMarker);
+        stopClusterer.add(currentMarker);
+    }
     /**
      * Create a new stop cluster object used to group stops that are close by to reduce screen clutter
      */
+
     private void newStopClusterer() {
         stopClusterer = new RadiusMarkerClusterer(activity);
         stopClusterer.getTextPaint().setTextSize(20.0F * BusesAreUs.dpiFactor());
@@ -133,6 +146,11 @@ public class BusStopPlotter extends MapViewOverlay {
                 }
             }
         }
+        checkNearestDifferentConditions(nearest, stopIconDrawable, closestStopIconDrawable);
+    }
+
+    private void checkNearestDifferentConditions(Stop nearest, Drawable closestStopIconDrawable,
+                                                 Drawable stopIconDrawable) {
         if (nearest != null) {
             nearestStnMarker = getMarker(nearest);
             if (nearestStnMarker != null) {
