@@ -132,21 +132,35 @@ public class BusStopPlotter extends MapViewOverlay {
         checkInitialState(stopIconDrawable, nearest);
         if (nearest != null) {
             Marker nearestMarker = getMarker(nearest);
-            if (nearestMarker != null) {
-                if (nearestStnMarker != null) {
-                    nearestStnMarker.setIcon(stopIconDrawable);
-                }
-                nearestMarker.setIcon(closestStopIconDrawable);
-                nearestStnMarker = nearestMarker;
-            } else {
-                makeNewMarker(closestStopIconDrawable, nearest);
+            nearestMarker(nearestMarker, stopIconDrawable, closestStopIconDrawable, nearest);
+        } else {
+            for (Stop stop : stopMarkerMap.keySet()) {
+                Marker farMarker = getMarker(stop);
+                farMarker.setIcon(stopIconDrawable);
             }
+        }
+    }
+    /*
+    * Helper method to update nearestStnMarker
+     */
+
+    private void nearestMarker(Marker nearestMarker, Drawable stopIconDrawable,
+                               Drawable closestStopIconDrawable, Stop nearest) {
+        if (nearestMarker != null) {
+            if (nearestStnMarker != null) {
+                nearestStnMarker.setIcon(stopIconDrawable);
+            }
+            nearestMarker.setIcon(closestStopIconDrawable);
+            nearestStnMarker = nearestMarker;
+        } else {
+            makeNewMarker(closestStopIconDrawable, nearest);
         }
     }
 
     /*
     * Helper method to check initial state
     */
+
     private void checkInitialState(Drawable stopIconDrawable, Stop nearest) {
         if (getMarker(nearest) != nearestStnMarker && nearestStnMarker != null) {
             nearestStnMarker.setIcon(stopIconDrawable);
