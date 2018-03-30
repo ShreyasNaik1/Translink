@@ -158,7 +158,6 @@ public class BusStopPlotter extends MapViewOverlay {
     }
 
     /*
-    *
     * Helper method to check initial state
     */
 
